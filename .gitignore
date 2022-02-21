@@ -1,0 +1,15 @@
+/coverage
+/.cache-loader
+/node_modules
+*.log
+/packages/*/dist
+.env
+package-lock.json
+manifest.json
+/*-results.json
+/*.xml
+/cypress/screenshots
+/cypress/videos
+.DS_Store
+.cache
+dist

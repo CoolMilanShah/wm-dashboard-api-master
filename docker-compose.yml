@@ -1,0 +1,29 @@
+version: "2.4"
+services:
+  base:
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+
+  dev:
+    extends:
+      service: base
+    command: bin/watch
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
+    ports:
+      - "8080:8080"
+      - "9229:9229"
+    environment:
+      - NODE_ENV=development
+
+  ci:
+    extends:
+      service: base
+    command: yarn ci
+    stdin_open: true
+    tty: true
+    environment:
+      - NODE_ENV=test

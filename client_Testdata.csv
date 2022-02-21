@@ -1,0 +1,2 @@
+client_id,name,dob,family,gender,nationality,residential_status,anniversary_date,kyc_status,risk_category,acquistion_date,country,state,city,pin_code,mobile_no,email_id,pan_no,address,aadhar_no,services_availed
+1114,Mahesh Agashe,1984-04-22,Mahesh Agashe,Male,Indian,Resident,1984-04-22,Registered,Balanced,1984-04-22,India,Maharashtra,Navi Mumbai,400614,9833924411,maheshagashe@gmail.com,AJDPA3057B,MyAddress,0,"MF Insurance"
