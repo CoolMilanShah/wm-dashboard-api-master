@@ -142,7 +142,74 @@ function CurrentHalfYearlyGrossRevenue() {
  where r.financial_year = r.currentfinancial_year`;
   return queryText;
 }
+async function GrossRevenuePercentageBarData(Period, Branch) {
+  const revAmountCol = 'commission';
+  const revDateCol = 'month_year';
+  const revTableName = 'revenue';
 
+  const expenseAmountCol = 'expense_amount';
+  const expenseDateCol = 'expense_date';
+  const expenseTableName = 'expenses';
+
+  let queryText = '';
+  let data = '';
+
+  if (Period === 'Yearly') {
+    queryText = `select r.labelName,  ((coalesce(nullif(e.dataVal, 0),0))/(r.dataVal) *100) as dataVal
+                    from (${YearlyRevenueQuery(
+      revDateCol,
+      revAmountCol,
+      revTableName,
+
+    )}) as r
+                    left OUTER JOIN
+                    (${YearlyRevenueQuery(
+      expenseDateCol,
+      expenseAmountCol,
+      expenseTableName,
+    )}) as e
+                    on r.labelName = e.labelName`;
+  } else if (Period === 'Quarterly') {
+    queryText = `select r.labelName,  ((coalesce(nullif(e.dataVal, 0),0))/(r.dataVal) *100) as dataVal
+                    from (${QuaterlyRevenueQuery(
+      revDateCol,
+      revAmountCol,
+      revTableName,
+    )}) as r
+                    left OUTER JOIN
+                    (${QuaterlyRevenueQuery(
+      expenseDateCol,
+      expenseAmountCol,
+      expenseTableName,
+    )}) as e
+                    on r.labelName = e.labelName`;
+  } else if (Period === 'HalfYearly') {
+    queryText = `select r.labelName,  ((coalesce(nullif(e.dataVal, 0),0))/(r.dataVal) *100) as dataVal
+                    from (${HalfYearlyRevenueQuery(
+      revDateCol,
+      revAmountCol,
+      revTableName,
+    )}) as r
+                    left OUTER JOIN
+                    (${HalfYearlyRevenueQuery(
+      expenseDateCol,
+      expenseAmountCol,
+      expenseTableName,
+    )}) as e
+                    on r.labelName = e.labelName`;
+  } else if (Period === 'Monthly') {
+    let whereClause = '';
+    whereClause = WhereClauseBranch('');
+    queryText = `SELECT r.my as labelName, ((coalesce(nullif(e.eamount, 0),0))/(r.amount) *100) as dataVal
+    FROM (select to_char(month_year,'MON-YY') as my, sum (CAST(net_commission AS NUMERIC)) as amount from revenue ${whereClause} group by my) as r
+    left OUTER JOIN
+    (select sum(CAST(expense_amount AS NUMERIC)) as eamount, to_char(expense_date,'MON-YY') as edate from expenses ${whereClause} group by expense_date) as e
+    on r.my=e.edate order by to_date(concat('01-',r.my),'DD-MON-YYYY') asc`;
+  }
+  data = await transaction(queryText);
+  const sortedData = SortData(Period, data.rows);
+  return sortedData;
+}
 async function ProcessNetRevenuePieData(Period, Branch) {
   let queryText = '';
   let data = '';
@@ -526,6 +593,9 @@ async function getData({ filterValue }) {
 
   if (DataType === 'NetRevenuPieData') {
     return ProcessNetRevenuePieData(Period, Branch);
+  }
+  if (DataType === 'GrossRevenuePercentageBarData') {
+    return GrossRevenuePercentageBarData(Period, Branch);
   }
   if (DataType === 'NetRevenueBarData') {
     return ProcessNetRevenueBarData(Period, Branch);
