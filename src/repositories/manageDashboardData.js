@@ -351,7 +351,7 @@ async function ProcessNetRevenueBarData(Period, Branch) {
     let whereClause = '';
     whereClause = WhereClauseBranch('');
     queryText = `SELECT r.my as labelName, (r.amount - coalesce(nullif(e.eamount, 0),0)) as dataVal
-    FROM (select to_char(month_year,'MON-YY') as my, sum (CAST(net_commission AS NUMERIC)) as amount from revenue group by my) as r
+    FROM (select to_char(month_year,'MON-YY') as my, sum (CAST(net_commission AS NUMERIC)) as amount from revenue ${whereClause} group by my) as r
     left OUTER JOIN
     (select sum(CAST(expense_amount AS NUMERIC)) as eamount, to_char(expense_date,'MON-YY') as edate from expenses ${whereClause} group by expense_date) as e
     on r.my=e.edate order by to_date(concat('01-',r.my),'DD-MON-YYYY') asc`;
