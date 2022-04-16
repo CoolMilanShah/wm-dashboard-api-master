@@ -143,7 +143,7 @@ function CurrentHalfYearlyGrossRevenue() {
   return queryText;
 }
 async function GrossRevenuePercentageBarData(Period, Branch) {
-  const revAmountCol = 'commission';
+  const revAmountCol = 'net_commission';
   const revDateCol = 'month_year';
   const revTableName = 'revenue';
 
@@ -360,7 +360,7 @@ function SortData(Period, data) {
   }
 }
 async function ProcessNetRevenueBarData(Period, Branch) {
-  const revAmountCol = 'commission';
+  const revAmountCol = 'net_commission';
   const revDateCol = 'month_year';
   const revTableName = 'revenue';
 
