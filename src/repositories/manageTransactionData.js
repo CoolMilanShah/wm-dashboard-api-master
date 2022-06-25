@@ -124,11 +124,10 @@ async function updateData(params) {
     remarks,
     transactiondate,
     id,
-    createdatetime,
-    Branch,
+    createdatetime,    
   } = params;
   const netcomm = (commission - tds).toFixed(2);
-  const queryText = `update revenue set commission=$1, tds=$2, net_commission=$3, remarks=$4, created_date_time=$10, branch=$11 where vertical=$5 and sub_vertical=$6 and vendor=$7
+  const queryText = `update revenue set commission=$1, tds=$2, net_commission=$3, remarks=$4, created_date_time=$10 where vertical=$5 and sub_vertical=$6 and vendor=$7
                      and to_char(month_year, 'MON-YYYY')=$8 and id=$9`;
   const result = await transaction(queryText, [
     commission,
@@ -140,8 +139,7 @@ async function updateData(params) {
     vendor,
     transactiondate,
     id,
-    createdatetime,
-    Branch,
+    createdatetime,    
   ]);
   return result;
 }
